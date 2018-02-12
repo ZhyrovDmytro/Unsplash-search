@@ -1,0 +1,16 @@
+# editors
+*.sublime-*
+.idea
+
+# npm
+/node_modules/
+npm-debug.log
+
+# favicons
+/faviconData.json
+
+# dist
+/dist
+
+# styleguide
+/styleguide
