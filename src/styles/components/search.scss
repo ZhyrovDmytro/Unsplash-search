@@ -1,0 +1,112 @@
+.search {
+    display: flex;
+    flex-flow: column wrap;
+    text-align: center;
+
+    &__title {
+        padding-left: 40px;
+        font-size: 2em;
+        font-weight: 300;
+    }
+
+    &__form {
+        position: relative;
+        align-self: start;
+        margin-top: 20px;
+        vertical-align: middle;
+    }
+
+    &__input {
+        z-index: 10;
+        width: 100px;
+        padding: 5px;
+        margin-left: 30px;
+        font-size: 2em;
+        font-weight: 300;
+        border: none;
+        border-bottom: 1px solid $border-grey-light;
+        transition: box-shadow .3s ease;
+        transition: width .5s ease;
+
+        &:focus {
+            outline: none;
+            width: 300px;
+            border-bottom: 1px solid $border-grey-dark;
+            transition: all .5s ease;
+        }
+
+        @include media-breakpoint-up(sm) {
+            width: 150px;
+        }
+
+        @include media-breakpoint-up(sm) {
+            width: 200px;
+        }
+    }
+
+    &__result {
+        display: flex;
+        align-self: center;
+        width: 300px;
+        font-weight: 300;
+
+        @include media-breakpoint-up(sm) {
+            width: 400px;
+        }
+
+        @include media-breakpoint-up(sm) {
+            width: 550px;
+        }
+
+        &--name {
+            padding: 15px 5px;
+            text-align: left;
+        }
+
+        &.disabled {
+            display: none;
+        }
+
+        &.active {
+            display: block;
+        }
+    }
+
+    &__table {
+        width: 100%;
+        box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .2);
+    }
+
+    &__item {
+        z-index: 100;
+        padding: 5px;
+        text-align: right;
+        vertical-align: middle;
+    }
+
+    &__row {
+        border: 2px solid $border-grey;
+
+        &.disabled {
+            display: none;
+        }
+
+        &.active {
+            display: table-row;
+        }
+    }
+
+    &__random {
+        &--hero {
+            display: inline-block;
+
+            &:hover {
+                cursor: pointer;
+            }
+
+            &:active {
+                transform: scale(.95);
+            }
+        }
+    }
+}

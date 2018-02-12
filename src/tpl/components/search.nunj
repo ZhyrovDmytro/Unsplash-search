@@ -1,0 +1,10 @@
+
+<div class="search js-search">
+    <div class="search__form">
+        <input placeholder="search" class="search__input js-search-input" />
+        <button class="js-button-search btn">FIND</button>
+        <button class="js-button-random btn">RANDOM</button>
+    </div>
+    <div class="js-search-result search__result">
+    </div>
+</div>
