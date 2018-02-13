@@ -2,9 +2,11 @@
 <div class="search js-search">
     <div class="search__form">
         <input placeholder="search" class="search__input js-search-input" />
-        <button class="js-button-search btn">FIND</button>
-        <button class="js-button-random btn">RANDOM</button>
+        <div class="search__buttons">
+            <button class="js-button-search btn btn-100">FIND</button>
+            <button class="js-button-random btn btn-100">RANDOM</button>
     </div>
+        </div>
     <div class="js-search-result search__result">
         {% include "../helpers/loader.nunj" %}
     </div>
