@@ -1,3 +1,18 @@
-{% for image in data %}
-    <img class="search__item" src={{ image.urls.small }}></img>
+{% for image in renderData %}
+    <figure>
+        <picture>
+            <source srcset="{{ image.urls.full }}" media="(min-width: 1000px)">
+            <source srcset="{{ image.urls.regular }}" media="(min-width: 800px)">
+            <img class="search__item" src={{ image.urls.small }} alt="Unsplash image"></img>
+        </picture>
+        <figcaption>Photo by
+            <a href='{{ image.user.links.html }}'>
+                {{ image.user.firs_name }} {{ image.user.last_name }}
+            </a>
+                on
+            <a href='https://unsplash.com/?utm_source=Search_API&utm_medium=referral'>
+                Unsplash
+            </a>
+        </figcaption>
+    </figure>
 {% endfor %}

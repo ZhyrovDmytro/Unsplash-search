@@ -1,5 +1,6 @@
 export const API = {
-    searchItems: 'https://api.unsplash.com/search/photos/?page=1&per_page=12'
+    searchItems: 'https://api.unsplash.com/search/photos/?page=1&per_page=12',
+    searchItemsRandom: 'https://api.unsplash.com/photos/random/'
 };
 
 export const state = {
