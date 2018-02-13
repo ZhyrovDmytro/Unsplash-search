@@ -34,6 +34,7 @@ gulp.task('serve', ['prepare'], () => {
         watch(config.CSS_ALL, ['styles', 'styleguide', 'copySgAssets']);
         watch(config.JS_ALL, ['eslint:app']);
         watch(config.IMAGES_ALL, ['images', 'tpl']);
+        watch(config.NUNJ_TEMPLATES, ['copyNunjTemplates']);
         watch(config.SVG_SPRITE_ALL, ['svg', 'tpl']);
         watch(config.TEMPLATE_ALL, ['tpl']);
         watch(config.API, ['api-reload']);

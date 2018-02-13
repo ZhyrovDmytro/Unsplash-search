@@ -18,3 +18,10 @@ gulp.task('copySgAssets', () => {
 
     return merge(css, js, gfx);
 });
+
+gulp.task('copyNunjTemplates', () => {
+    const nunjTemplates = gulp.src(`${config.NUNJ_TEMPLATES}/*`)
+        .pipe(gulp.dest(`${config.NUNJ_TEMPLATES_BUILD}`));
+
+    return nunjTemplates;
+});

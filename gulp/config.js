@@ -35,6 +35,10 @@ const
     GFX_BUILD = `${BUILD_BASE}/gfx`,
     GFX_TPL_PATH = '/gfx',
 
+    /* Nunjucks JS templates */
+    NUNJ_TEMPLATES = `${JS_BASE}/components/templates`,
+    NUNJ_TEMPLATES_BUILD = `${JS_BUILD}/templates`,
+
     /* SVG */
     SVG_BASE = `${GFX_BASE}/svg`,
     SVG_SINGLE_ALL = `${SVG_BASE}/*.svg`,
@@ -102,6 +106,9 @@ module.exports = {
     CSS_ALL,
     CSS_BUILD,
     CSS_TPL_PATH,
+
+    NUNJ_TEMPLATES,
+    NUNJ_TEMPLATES_BUILD,
 
     JS_BASE,
     JS_MAIN_FILENAME,
