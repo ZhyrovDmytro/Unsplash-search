@@ -1,0 +1,4 @@
+{% for image in data %}
+    <div>{{ image.id }}</div>
+    <img>src={{ image.urls.small }}</img>
+{% endfor %}

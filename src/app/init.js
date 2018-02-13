@@ -1,6 +1,6 @@
-export default function init(fn, container, ...args) {
+export default function init(Fn, container, ...args) {
     if (container) {
-        return fn(container, ...args);
+        return new Fn(container, ...args);
     }
 
     return undefined;
