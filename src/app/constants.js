@@ -1,5 +1,5 @@
 export const API = {
-    searchItems: 'https://api.unsplash.com/photos/?client_id=452c69632818336a2c6b341b066847cb873fd987fa1876c039f59b615bf3fb9b'
+    searchItems: 'https://api.unsplash.com/search/photos/?page=1&per_page=12'
 };
 
 export const state = {
@@ -13,4 +13,8 @@ export const template = {
 
 export const nunjucksOption = {
     web: { useCache: true }
+};
+
+export const unsplashClient = {
+    id: '452c69632818336a2c6b341b066847cb873fd987fa1876c039f59b615bf3fb9b'
 };
