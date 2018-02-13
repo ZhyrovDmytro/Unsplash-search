@@ -17,15 +17,22 @@ export default class Search {
         this.searchButton.addEventListener('click', this.searchItems);
         this.searchInput.addEventListener('focus', this.errorReset);
         this.searchInput.addEventListener('keyup', this.searchItemsByEnterKey);
-        this.searchRandom.addEventListener('click', this.searchRandom);
+        this.searchRandom.addEventListener('click', this.requestService);
     }
 
-    requestService = (inputQuery) => {
+    requestService = (inputValue) => {
+        let searchPath;
+        let data;
+
+        event.target === this.searchRandom ?
+            searchPath = `${API.searchItemsRandom}?count=12&client_id=${unsplashClient.id}` :
+            searchPath = `${API.searchItems}&query=${inputValue}&client_id=${unsplashClient.id}`;
+
         this.loaderActive();
 
-        axios.get(`${API.searchItems}&query=${inputQuery}&client_id=${unsplashClient.id}`)
+        axios.get(searchPath)
             .then(respond => {
-                this.renderResults(respond.data);
+                this.renderResults(respond);
             })
             .catch(error => {
                 console.error('Failed!');
@@ -34,7 +41,6 @@ export default class Search {
 
     searchItems = () => {
         const inputValue = this.searchInput.value;
-        const inputQuery = this.inputValue;
 
         if (inputValue === '') {
             this.messageError.classList.add(state.active);
@@ -45,7 +51,7 @@ export default class Search {
             this.messageError.innerHTML = error.searchQueryShort;
             this.searchInput.classList.add(state.error);
         } else {
-            this.requestService(inputQuery);
+            this.requestService(inputValue);
         }
     }
 
@@ -66,15 +72,20 @@ export default class Search {
         }
     }
 
-    searchRandom = () => {
-        console.log('asfdasd');
-    }
+    renderResults = (respond) => {
+        let renderData;
 
-    renderResults = (data) => {
+        this.searchInput.value === '' ?
+            renderData = respond.data :
+            renderData = respond.data.results;
+
         const template = this.nunjEnv.getTemplate('result.nunj');
-        const insertTemplate = template.render(data); // rendering nunjucks template
-
+        const insertTemplate = template.render({ renderData }); // rendering nunjucks template
         this.results.innerHTML = insertTemplate;
+
+
+        this.loaderDisable();
+        this.searchInput.value = '';
     }
 
     // add loader
