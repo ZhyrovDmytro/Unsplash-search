@@ -6,5 +6,6 @@
         <button class="js-button-random btn">RANDOM</button>
     </div>
     <div class="js-search-result search__result">
+        {% include "../helpers/loader.nunj" %}
     </div>
 </div>
