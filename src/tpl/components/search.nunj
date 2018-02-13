@@ -5,8 +5,9 @@
         <div class="search__buttons">
             <button class="js-button-search btn btn-100">FIND</button>
             <button class="js-button-random btn btn-100">RANDOM</button>
-    </div>
         </div>
+        <span class=" errorMessage js-error-message errorMessage__text"></span>
+    </div>
     <div class="js-search-result search__result">
         {% include "../helpers/loader.nunj" %}
     </div>
