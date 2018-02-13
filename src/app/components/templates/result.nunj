@@ -1,4 +1,3 @@
 {% for image in data %}
-    <div>{{ image.id }}</div>
-    <img>src={{ image.urls.small }}</img>
+    <img class="search__item" src={{ image.urls.small }}></img>
 {% endfor %}

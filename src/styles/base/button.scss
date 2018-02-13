@@ -1,15 +1,25 @@
 .btn {
     min-width: 120px;
     padding: 12px 20px;
+    margin: 0 5px;
     background-color: $main-white;
     border: 1px solid $border-grey-light;
     transition: border .5s ease;
-    margin: 0 5px;
 
     &:hover,
     &:focus {
         cursor: pointer;
         border: 1px solid $border-grey-dark;
         outline: none;
+    }
+}
+
+.btn-100 {
+    width: 100%;
+    margin-left: 0;
+
+    @include media-breakpoint-up(lg) {
+        display: inline-block;
+        width: inherit;
     }
 }
