@@ -68,7 +68,7 @@
     }
 
     &__result {
-        margin-top: 20px;
+        margin: 20px 0;
         line-height: 0;
         column-count: 1;
         column-gap: 20px;
@@ -97,7 +97,7 @@
 
     &__load-more {
         display: none;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
         text-align: right;
 
         &.active {
@@ -137,23 +137,37 @@
         left: 10px;
         font-size: 18px;
         color: #fff;
+        justify-self: flex-end;
         opacity: 1;
+    }
+
+    &__wrapper-download {
+        text-align: right;
+        margin-right: 20px;
+        display: inline-block;
+        width: 100%;
+    }
+
+    &__download {
+        @include size(25px);
+        fill: #fff;
     }
 
     &__likes {
         position: absolute;
         top: 20px;
-        left: 20px;
         display: flex;
         align-items: center;
+        width: 100%;
 
         &--icon {
-            @include size(25px);
+            margin-right: 10px;
             fill: rgb(255, 41, 41);
         }
 
         &--text {
             padding-right: 10px;
+            margin-left: 20px;
             font-weight: 600;
             color: #fff;
         }

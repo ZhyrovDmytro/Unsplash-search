@@ -13,7 +13,7 @@ export default class Search {
         this.searchRandom = this.container.querySelector('.js-button-random');
         this.results = this.container.querySelector('.js-search-result');
         this.loader = this.container.querySelector('.loader');
-
+        this.pageNumber = 1;
         this.nunjEnv = nunjucks.configure(template.templatePath, nunjucksOption.web);
 
         this.searchButton.addEventListener('click', this.searchItems);
@@ -29,7 +29,6 @@ export default class Search {
 
         axios.get(searchPath)
             .then(respond => {
-                console.log(respond);
                 this.renderResults(respond);
             })
             .catch(error => {
@@ -39,19 +38,24 @@ export default class Search {
 
     getSearchingPath = (inputValue) => {
         let searchPath;
-        let pageNumber = 0;
+        let nextPage;
+        nextPage = this.pageNumber;
 
         if (event.target === this.loadMoreButton) {
-            pageNumber += 1;
-            inputValue;
-            console.log(pageNumber);
+            nextPage += 1;
+            this.pageNumber = nextPage;
+            inputValue = this.searchInput.value;
         } else {
-            pageNumber = 1;
+            nextPage = 1;
         }
 
-        event.target === this.searchRandom ?
-            searchPath = `${API.searchItemsRandom}?count=12&client_id=${unsplashClient.id}` :
-            searchPath = `${API.searchItems}?page=${pageNumber}&per_page=12&query=${inputValue}&client_id=${unsplashClient.id}`;
+        if (event.target === this.searchRandom || this.searchInput.value === '') {
+            this.searchInput.value = '';
+            searchPath = `${API.searchItemsRandom}?count=12&client_id=${unsplashClient.id}`;
+            this.loadMore.classList.add(state.active);
+        } else {
+            searchPath = `${API.searchItems}?page=${nextPage}&per_page=10&query=${inputValue}&client_id=${unsplashClient.id}`;
+        }
 
         this.requestService(searchPath);
     }
@@ -109,15 +113,15 @@ export default class Search {
 
         const template = this.nunjEnv.getTemplate('result.nunj');
         const insertTemplate = template.render({ renderData }); // rendering nunjucks template
-        this.results.innerHTML = insertTemplate;
+        this.results.insertAdjacentHTML('beforeend', insertTemplate);
 
         this.loaderDisable();
-        if (respond.data.total_pages > 0) {
+
+        if (respond.data.total_pages > 0 || respond.config.url.includes('random')) {
             this.checkMoreItems(respond);
         } else {
             this.loadMore.classList.remove(state.active);
         }
-        // this.searchInput.value = '';
     }
 
     // add loader
