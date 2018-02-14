@@ -7,6 +7,8 @@ export default class Search {
         this.container = container;
         this.searchInput = this.container.querySelector('.js-search-input');
         this.searchButton = this.container.querySelector('.js-button-search');
+        this.loadMoreButton = this.container.querySelector('.js-button-more');
+        this.loadMore = this.container.querySelector('.js-load-more');
         this.messageError = this.container.querySelector('.js-error-message');
         this.searchRandom = this.container.querySelector('.js-button-random');
         this.results = this.container.querySelector('.js-search-result');
@@ -15,23 +17,19 @@ export default class Search {
         this.nunjEnv = nunjucks.configure(template.templatePath, nunjucksOption.web);
 
         this.searchButton.addEventListener('click', this.searchItems);
-        this.searchInput.addEventListener('focus', this.errorReset);
+        this.searchInput.addEventListener('focus', this.errorRemove);
         this.searchInput.addEventListener('keyup', this.searchItemsByEnterKey);
-        this.searchRandom.addEventListener('click', this.requestService);
+        this.searchRandom.addEventListener('click', this.getSearchingPath);
+        this.loadMoreButton.addEventListener('click', this.loadMoreItems);
     }
 
-    requestService = (inputValue) => {
-        let searchPath;
-        let data;
-
-        event.target === this.searchRandom ?
-            searchPath = `${API.searchItemsRandom}?count=12&client_id=${unsplashClient.id}` :
-            searchPath = `${API.searchItems}&query=${inputValue}&client_id=${unsplashClient.id}`;
+    requestService = (searchPath) => {
 
         this.loaderActive();
 
         axios.get(searchPath)
             .then(respond => {
+                console.log(respond);
                 this.renderResults(respond);
             })
             .catch(error => {
@@ -39,26 +37,36 @@ export default class Search {
             });
     }
 
+    getSearchingPath = (inputValue) => {
+        let searchPath;
+        let pageNumber = 0;
+
+        if (event.target === this.loadMoreButton) {
+            pageNumber += 1;
+            inputValue;
+            console.log(pageNumber);
+        } else {
+            pageNumber = 1;
+        }
+
+        event.target === this.searchRandom ?
+            searchPath = `${API.searchItemsRandom}?count=12&client_id=${unsplashClient.id}` :
+            searchPath = `${API.searchItems}?page=${pageNumber}&per_page=12&query=${inputValue}&client_id=${unsplashClient.id}`;
+
+        this.requestService(searchPath);
+    }
+
     searchItems = () => {
         const inputValue = this.searchInput.value;
 
         if (inputValue === '') {
-            this.messageError.classList.add(state.active);
+            this.errorShow();
             this.messageError.innerHTML = error.searchQueryEmpty;
-            this.searchInput.classList.add(state.error);
         } else if (inputValue.length < 3) {
-            this.messageError.classList.add(state.active);
+            this.errorShow();
             this.messageError.innerHTML = error.searchQueryShort;
-            this.searchInput.classList.add(state.error);
         } else {
-            this.requestService(inputValue);
-        }
-    }
-
-    errorReset = () => {
-        if (this.searchInput.classList.contains(state.error)) {
-            this.messageError.classList.remove(state.active);
-            this.searchInput.classList.remove(state.error);
+            this.getSearchingPath(inputValue);
         }
     }
 
@@ -72,9 +80,29 @@ export default class Search {
         }
     }
 
+    checkMoreItems = (respond) => {
+        this.loadMore.classList.add(state.active);
+        respond.data.total_pages -= 1;
+    }
+
+    loadMoreItems = () => {
+        this.getSearchingPath();
+    }
+
+    errorShow = () => {
+        this.messageError.classList.add(state.active);
+        this.searchInput.classList.add(state.error);
+    }
+
+    errorRemove = () => {
+        if (this.searchInput.classList.contains(state.error)) {
+            this.messageError.classList.remove(state.active);
+            this.searchInput.classList.remove(state.error);
+        }
+    }
+
     renderResults = (respond) => {
         let renderData;
-
         this.searchInput.value === '' ?
             renderData = respond.data :
             renderData = respond.data.results;
@@ -83,9 +111,13 @@ export default class Search {
         const insertTemplate = template.render({ renderData }); // rendering nunjucks template
         this.results.innerHTML = insertTemplate;
 
-
         this.loaderDisable();
-        this.searchInput.value = '';
+        if (respond.data.total_pages > 0) {
+            this.checkMoreItems(respond);
+        } else {
+            this.loadMore.classList.remove(state.active);
+        }
+        // this.searchInput.value = '';
     }
 
     // add loader

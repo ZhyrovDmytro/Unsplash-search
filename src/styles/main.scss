@@ -10,4 +10,17 @@ body {
     }
 }
 
+figure {
+    margin: 0 0 20px;
+}
+
+a {
+    color: #fff;
+    text-decoration: underline;
+
+    &:hover {
+        color: #fff;
+    }
+}
+
 @import 'components/*';
