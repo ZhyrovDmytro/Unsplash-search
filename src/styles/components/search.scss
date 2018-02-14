@@ -11,7 +11,6 @@
     &__form {
         position: relative;
         display: grid;
-        margin-top: 20px;
         grid-template-columns: auto;
         grid-template-rows: auto;
 
@@ -49,14 +48,13 @@
         }
 
         &.error {
+            color: rgb(204, 2, 2);
             border-bottom: 1px solid rgb(204, 2, 2);
             transition: all .3s;
 
             &::placeholder {
                 color: rgb(204, 2, 2);
             }
-
-            color: rgb(204, 2, 2);
         }
     }
 
@@ -70,10 +68,10 @@
     }
 
     &__result {
-        margin-top: 20px;
+        margin: 20px 0;
         line-height: 0;
         column-count: 1;
-        column-gap: 10px;
+        column-gap: 20px;
 
         @include media-breakpoint-up(md) {
             column-count: 2;
@@ -97,9 +95,81 @@
         }
     }
 
+    &__load-more {
+        display: none;
+        margin-bottom: 20px;
+        text-align: right;
+
+        &.active {
+            display: block;
+        }
+    }
+
     &__item {
         width: 100%;
         height: auto;
-        margin-bottom: 10px;
+        box-shadow: inset 0 210px 120px 100px rgba(66, 66, 66, .75);
+    }
+
+    &__figure {
+        position: relative;
+    }
+
+    &__info {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-image: linear-gradient(180deg, rgba(0, 0, 0, .2) 0, transparent 40%, transparent 60%, rgba(0, 0, 0, .3));
+        opacity: 0;
+        transition: all .15s ease-in-out;
+
+        &:hover,
+        &:hover + .search__figcaption {
+            opacity: 1;
+        }
+    }
+
+    &__figcaption {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        font-size: 18px;
+        color: #fff;
+        justify-self: flex-end;
+        opacity: 1;
+    }
+
+    &__wrapper-download {
+        text-align: right;
+        margin-right: 20px;
+        display: inline-block;
+        width: 100%;
+    }
+
+    &__download {
+        @include size(25px);
+        fill: #fff;
+    }
+
+    &__likes {
+        position: absolute;
+        top: 20px;
+        display: flex;
+        align-items: center;
+        width: 100%;
+
+        &--icon {
+            margin-right: 10px;
+            fill: rgb(255, 41, 41);
+        }
+
+        &--text {
+            padding-right: 10px;
+            margin-left: 20px;
+            font-weight: 600;
+            color: #fff;
+        }
     }
 }

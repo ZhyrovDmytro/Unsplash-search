@@ -11,4 +11,7 @@
     <div class="js-search-result search__result">
         {% include "../helpers/loader.nunj" %}
     </div>
+    <div class="js-load-more search__load-more">
+        <button class="js-button-more btn">LOAD MORE</button>
+    </div>
 </div>
