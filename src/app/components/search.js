@@ -13,14 +13,20 @@ export default class Search {
         this.searchRandom = this.container.querySelector('.js-button-random');
         this.results = this.container.querySelector('.js-search-result');
         this.loader = this.container.querySelector('.loader');
+        this.modal = document.querySelector('.js-modal');
+        this.closeModalButton = document.querySelector('.js-modal-close');
         this.pageNumber = 1;
+
         this.nunjEnv = nunjucks.configure(template.templatePath, nunjucksOption.web);
 
         this.searchButton.addEventListener('click', this.searchItems);
         this.searchInput.addEventListener('focus', this.errorRemove);
         this.searchInput.addEventListener('keyup', this.searchItemsByEnterKey);
+        this.searchInput.addEventListener('input', this.resetSearchResults);
         this.searchRandom.addEventListener('click', this.getSearchingPath);
         this.loadMoreButton.addEventListener('click', this.loadMoreItems);
+        this.modal.addEventListener('click', this.handleClickModal);
+        this.closeModalButton.addEventListener('click', this.closeModalWindow);
     }
 
     requestService = (searchPath) => {
@@ -63,7 +69,7 @@ export default class Search {
     searchItems = () => {
         const inputValue = this.searchInput.value;
 
-        if (inputValue === '') {
+        if (inputValue.trim() === '') {
             this.errorShow();
             this.messageError.innerHTML = error.searchQueryEmpty;
         } else if (inputValue.length < 3) {
@@ -108,8 +114,8 @@ export default class Search {
     renderResults = (respond) => {
         let renderData;
         this.searchInput.value === '' ?
-            renderData = respond.data :
-            renderData = respond.data.results;
+        renderData = respond.data :
+        renderData = respond.data.results;
 
         const template = this.nunjEnv.getTemplate('result.nunj');
         const insertTemplate = template.render({ renderData }); // rendering nunjucks template
@@ -122,6 +128,36 @@ export default class Search {
         } else {
             this.loadMore.classList.remove(state.active);
         }
+        this.renderModal();
+    }
+
+    renderModal = () => {
+        const items = [...this.container.querySelectorAll('.js-figure')];
+
+        for (let i = 0; i < items.length; i += 1) {
+            items[i].addEventListener('click', this.openModal);
+        }
+    }
+
+    openModal = (event) => {
+
+        console.log(event.currentTarget);
+        this.modal.classList.add(state.active);
+    }
+
+    // handle outside click
+    handleClickModal = (event) => {
+        event.target === this.modal ? this.closeModalWindow() : false;
+    }
+
+    // close modal window
+    closeModalWindow = () => {
+        this.modal.classList.remove(state.active);
+    }
+
+    resetSearchResults = () => {
+        this.results.innerHTML = '';
+        this.loadMore.classList.remove(state.active);
     }
 
     // add loader
