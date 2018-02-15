@@ -4,4 +4,5 @@
 
 {% block content %}
     {% include "../tpl/components/search.nunj" %}
+    {% include "components/modal.nunj" %}
 {% endblock %}

@@ -1,20 +1,22 @@
 {% for image in renderData %}
-    <figure class="search__figure">
-        <picture class="search__picture">
+    <figure class="search__figure js-figure">
+        <picture>
             <img class="search__item" src={{ image.urls.small }} alt="Unsplash image" />
         </picture>
-        <figcaption class="search__info ">
+        <figcaption class="search__info">
             <div class="search__likes">
             <span class="search__likes--text">{{ image.likes }}</span>
                 <svg class="search__likes--icon" version="1.1" viewBox="0 0 32 32" width="32" height="32" aria-hidden="false">
                     <path d="M17.4 29c-.8.8-2 .8-2.8 0l-12.3-12.8c-3.1-3.1-3.1-8.2 0-11.4 3.1-3.1 8.2-3.1 11.3 0l2.4 2.8 2.3-2.8c3.1-3.1 8.2-3.1 11.3 0 3.1 3.1 3.1 8.2 0 11.4l-12.2 12.8z"></path>
                 </svg>
-                <a class="search__wrapper-download" href={{ image.links.download }} download>
-                    <svg class="search__download" download enable-background="new 0 0 480 480" version="1.1" viewBox="0 0 480 480" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
-                        <path d="m378.53 214.69l-21.088-24c-5.824-6.624-15.904-7.264-22.56-1.472l-62.88 55.104v-228.32c0-8.832-7.168-16-16-16h-32c-8.832 0-16 7.168-16 16v228.32l-62.88-55.104c-6.624-5.792-16.704-5.152-22.56 1.472l-21.088 23.968c-5.856 6.656-5.184 16.8 1.472 22.624l126.53 110.75c6.048 5.28 15.04 5.28 21.088 0l126.5-110.75c6.656-5.824 7.328-15.968 1.472-22.592z"/>
-                        <path d="m416 416h-352c-8.832 0-16 7.168-16 16v32c0 8.832 7.168 16 16 16h352c8.832 0 16-7.168 16-16v-32c0-8.832-7.168-16-16-16z"/>
-                    </svg>
-                </a>
+                <span class="search__wrapper-download">
+                    <a href={{ image.links.download }} download>
+                        <svg class="search__download" enable-background="new 0 0 480 480" version="1.1" viewBox="0 0 480 480" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                            <path d="m378.53 214.69l-21.088-24c-5.824-6.624-15.904-7.264-22.56-1.472l-62.88 55.104v-228.32c0-8.832-7.168-16-16-16h-32c-8.832 0-16 7.168-16 16v228.32l-62.88-55.104c-6.624-5.792-16.704-5.152-22.56 1.472l-21.088 23.968c-5.856 6.656-5.184 16.8 1.472 22.624l126.53 110.75c6.048 5.28 15.04 5.28 21.088 0l126.5-110.75c6.656-5.824 7.328-15.968 1.472-22.592z"/>
+                            <path d="m416 416h-352c-8.832 0-16 7.168-16 16v32c0 8.832 7.168 16 16 16h352c8.832 0 16-7.168 16-16v-32c0-8.832-7.168-16-16-16z"/>
+                        </svg>
+                    </a>
+                </span>
             </div>
             <div class="search__figcaption">
                 <p>Photo by
