@@ -1,0 +1,22 @@
+{% for image in renderData %}
+    <div class="modal__item">
+        <div class="modal__profile">
+            <figure class="modal__figure">
+                <picture>
+                    <a class="modal__photo">
+                        <img class="modal__item" src={{ image.urls.small }} alt="Unsplash image" />
+                    </a>
+                </picture>
+                <figcaption class="modal__info ">
+                    <a class="modal__info--name"></a>
+                    <a class="modal__info--link"></a>
+                </figcaption>
+            </figure>
+        </div>
+        <div class="modal__photo">
+            <span class=""></span>
+            <span class=""></span>
+        </div>
+    </div>
+{% endfor %}
+
