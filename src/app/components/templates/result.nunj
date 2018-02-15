@@ -1,5 +1,5 @@
 {% for image in renderData %}
-    <figure class="search__figure js-figure">
+    <figure class="search__figure js-figure" data-id="{{ image.id }}">
         <picture>
             <img class="search__item" src={{ image.urls.small }} alt="Unsplash image" />
         </picture>

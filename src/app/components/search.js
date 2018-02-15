@@ -14,7 +14,9 @@ export default class Search {
         this.results = this.container.querySelector('.js-search-result');
         this.loader = this.container.querySelector('.loader');
         this.modal = document.querySelector('.js-modal');
+        this.modalContent = document.querySelector('.js-modal-content');
         this.closeModalButton = document.querySelector('.js-modal-close');
+
         this.pageNumber = 1;
 
         this.nunjEnv = nunjucks.configure(template.templatePath, nunjucksOption.web);
@@ -35,6 +37,7 @@ export default class Search {
 
         axios.get(searchPath)
             .then(respond => {
+                console.log(respond);
                 this.renderResults(respond);
             })
             .catch(error => {
@@ -114,12 +117,16 @@ export default class Search {
     renderResults = (respond) => {
         let renderData;
         this.searchInput.value === '' ?
-        renderData = respond.data :
-        renderData = respond.data.results;
+            renderData = respond.data :
+            renderData = respond.data.results;
 
         const template = this.nunjEnv.getTemplate('result.nunj');
         const insertTemplate = template.render({ renderData }); // rendering nunjucks template
         this.results.insertAdjacentHTML('beforeend', insertTemplate);
+
+        const modalTemplate = this.nunjEnv.getTemplate('modal-content.nunj');
+        const insertModalTemplate = modalTemplate.render({ renderData }); // rendering nunjucks template
+        this.modalContent.insertAdjacentHTML('beforeend', insertModalTemplate);
 
         this.loaderDisable();
 
@@ -128,21 +135,31 @@ export default class Search {
         } else {
             this.loadMore.classList.remove(state.active);
         }
-        this.renderModal();
+        this.handleSelectImage();
     }
 
-    renderModal = () => {
+    handleSelectImage = () => {
         const items = [...this.container.querySelectorAll('.js-figure')];
 
         for (let i = 0; i < items.length; i += 1) {
-            items[i].addEventListener('click', this.openModal);
+            items[i].addEventListener('click', this.renderModal);
         }
     }
 
-    openModal = (event) => {
-
-        console.log(event.currentTarget);
+    renderModal = (respond) => {
         this.modal.classList.add(state.active);
+        this.openSelectedImage();
+    }
+
+    openSelectedImage = () => {
+        const clickedImages = [...this.container.querySelectorAll('.js-figure')];
+        const itemId = event.currentTarget.dataset.id;
+
+        this.modalContent.querySelector(`#_${itemId}`).classList.add(state.active);
+
+        clickedImages.forEach(image => {
+            if (image.classList.contains(state.active)) image.classList.toggle(state.active);
+        });
     }
 
     // handle outside click

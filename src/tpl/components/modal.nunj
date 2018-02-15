@@ -5,8 +5,7 @@
         <div class="modal__close">
             {{ svg('cross', 'modal__icon js-modal-close') }}
         </div>
-        <div class="js-modal-content modal__item">
-        <p>adsasdasda</p>
+        <div class="js-modal-content modal__wrapper">
         </div>
     </div>
 </div>
