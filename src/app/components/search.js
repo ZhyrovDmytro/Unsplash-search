@@ -152,14 +152,13 @@ export default class Search {
     }
 
     openSelectedImage = () => {
-        const clickedImages = [...this.container.querySelectorAll('.js-figure')];
+        const clickedImages = document.querySelectorAll('.js-modal-item');
         const itemId = event.currentTarget.dataset.id;
 
+        for (let i = 0; i < clickedImages.length; i += 1) {
+            if (clickedImages[i].classList.contains(state.active)) clickedImages[i].classList.remove(state.active);
+        }
         this.modalContent.querySelector(`#_${itemId}`).classList.add(state.active);
-
-        clickedImages.forEach(image => {
-            if (image.classList.contains(state.active)) image.classList.toggle(state.active);
-        });
     }
 
     // handle outside click

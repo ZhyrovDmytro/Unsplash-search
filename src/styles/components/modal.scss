@@ -7,7 +7,6 @@
     height: 100%;
     padding-top: 0;
     overflow: auto;
-    // background-color: rgba(100, 100, 100, .5);
     opacity: 0;
     visibility: hidden;
     transition: all .2s ease;
@@ -19,25 +18,25 @@
     }
 
     &__content {
-        padding: 10px;
-        margin: 70px 20px;
+        margin: 60px 0;
         background-color: #fff;
 
         @include media-breakpoint-up(sm) {
-            margin: 70px 30px;
+            margin: 60px 30px 0;
         }
 
         @include media-breakpoint-up(lg) {
-            margin: 80px 40px;
+            padding: 10px;
+            margin: 60px 90px 0;
         }
 
         @include media-breakpoint-up(xl) {
-            margin: 60px 80px;
+            margin: 60px 90px 0;
         }
     }
 
     &__icon {
-        @include size(25px);
+        @include size(20px);
         position: absolute;
         top: 20px;
         right: 20px;
@@ -73,10 +72,23 @@
     }
 
     &__image {
-        position: relative;
-        max-width: calc((100vh - 120px) * 0.666667);
-        min-width: 350px;
-        margin:0 auto;
+        max-width: calc(100vw - 40px);
+        max-height: calc(100vh - 180px);
+        margin: 0 auto 20px;
+
+        @include media-breakpoint-up(sm) {
+            max-width: calc(100vw - 120px);
+            max-height: calc(100vh - 200px);
+        }
+
+        @include media-breakpoint-up(md) {
+            max-width: calc(100vw - 250px);
+            max-height: calc(100vh - 180px);
+        }
+
+        @include media-breakpoint-up(lg) {
+            max-height: calc(100vh - 230px);
+        }
     }
 
     &__info {
@@ -108,27 +120,60 @@
         }
     }
 
+    &__options {
+        display: flex;
+        align-items: center;
+    }
+
     &__likes {
         display: flex;
         align-items: center;
 
-        &--download,
         &--icon {
-            @include size(30px);
+            @include size(20px);
             margin: 0 5px;
-        }
-
-        &--icon {
             fill: $red-likes;
         }
+    }
 
-        &--download {
-            fill: $color-unhover;
+    &__download {
+        border: 1px solid #eee;
+        padding: 0 10px;
+        margin-left: 5px;
+        transition: all .3s ease;
+
+        &:hover {
+            border: 1px solid $border-grey-dark;
+        }
+
+        &--link {
+            display: flex;
+            align-items: center;
+        }
+
+        &--text {
+            color: $border-grey-dark;
+        }
+
+        &--icon {
+            @include size(20px);
+            margin-top: 7px;
+            margin-left: 8px;
             transition: fill .3s ease;
+            fill: $color-unhover;
 
             &:hover {
                 fill: #000;
             }
+        }
+    }
+
+    &__location {
+        padding-left: 30px;
+        text-align: left;
+
+        &--icon {
+            @include size(20px);
         }
     }
 }
