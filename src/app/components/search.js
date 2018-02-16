@@ -61,7 +61,7 @@ export default class Search {
         if (event.target === this.searchRandom || this.searchInput.value === '') {
             this.searchInput.value = '';
             searchPath = `${API.searchItemsRandom}?count=12&client_id=${unsplashClient.id}`;
-            this.loadMore.classList.add(state.active);
+            if (event.target !== this.loadMoreButton) this.resetSearchResults();
         } else {
             searchPath = `${API.searchItems}?page=${nextPage}&per_page=10&query=${inputValue}&client_id=${unsplashClient.id}`;
         }
@@ -80,6 +80,8 @@ export default class Search {
             this.messageError.innerHTML = error.searchQueryShort;
         } else {
             this.getSearchingPath(inputValue);
+            this.resetSearchResults();
+            sessionStorage.setItem('query', inputValue);
         }
     }
 
@@ -94,8 +96,10 @@ export default class Search {
     }
 
     checkMoreItems = (respond) => {
+        const items = [...this.container.querySelectorAll('.js-figure')];
+
         this.loadMore.classList.add(state.active);
-        respond.data.total_pages -= 1;
+        if (items.length === respond.data.total) this.loadMore.classList.remove(state.active);
     }
 
     loadMoreItems = () => {
@@ -129,6 +133,7 @@ export default class Search {
         this.modalContent.insertAdjacentHTML('beforeend', insertModalTemplate);
 
         this.loaderDisable();
+        this.loadMore.classList.add(state.active);
 
         if (respond.data.total_pages > 0 || respond.config.url.includes('random')) {
             this.checkMoreItems(respond);
