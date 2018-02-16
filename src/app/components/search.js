@@ -9,6 +9,8 @@ export default class Search {
         this.searchButton = this.container.querySelector('.js-button-search');
         this.loadMoreButton = this.container.querySelector('.js-button-more');
         this.loadMore = this.container.querySelector('.js-load-more');
+        this.searchHistory = this.container.querySelector('.js-history');
+        this.searchHistoryList = this.container.querySelector('.js-history-list');
         this.messageError = this.container.querySelector('.js-error-message');
         this.searchRandom = this.container.querySelector('.js-button-random');
         this.results = this.container.querySelector('.js-search-result');
@@ -17,12 +19,15 @@ export default class Search {
         this.modalContent = document.querySelector('.js-modal-content');
         this.closeModalButton = document.querySelector('.js-modal-close');
 
+        this.searchHistoryStorage = [];
         this.pageNumber = 1;
 
         this.nunjEnv = nunjucks.configure(template.templatePath, nunjucksOption.web);
 
         this.searchButton.addEventListener('click', this.searchItems);
         this.searchInput.addEventListener('focus', this.errorRemove);
+        this.searchInput.addEventListener('focusIn', this.showQuerysHistory);
+        this.searchInput.addEventListener('blur', this.hideQuerysHistory);
         this.searchInput.addEventListener('keyup', this.searchItemsByEnterKey);
         this.searchInput.addEventListener('input', this.resetSearchResults);
         this.searchRandom.addEventListener('click', this.getSearchingPath);
@@ -36,7 +41,7 @@ export default class Search {
         this.loaderActive();
 
         axios.get(searchPath)
-            .then(respond => {
+        .then(respond => {
                 console.log(respond);
                 this.renderResults(respond);
             })
@@ -72,6 +77,8 @@ export default class Search {
     searchItems = () => {
         const inputValue = this.searchInput.value;
 
+        this.searchHistoryStorage.push(inputValue);
+
         if (inputValue.trim() === '') {
             this.errorShow();
             this.messageError.innerHTML = error.searchQueryEmpty;
@@ -81,7 +88,6 @@ export default class Search {
         } else {
             this.getSearchingPath(inputValue);
             this.resetSearchResults();
-            sessionStorage.setItem('query', inputValue);
         }
     }
 
@@ -93,6 +99,46 @@ export default class Search {
             this.searchInput.blur();
             this.searchButton.click(inputQuery);
         }
+    }
+
+    searchByHistoryItem = () => {
+        this.searchInput.value = '';
+        this.searchInput.value = event.target.innerHTML;
+
+        this.searchItems();
+    }
+
+    checkExistsImages = (respond) => {
+        if (respond.data.total === 0) {
+            this.errorShow();
+            this.messageError.innerHTML = error.searchQueryError;
+        }
+    }
+
+    showQuerysHistory = () => {
+        const newHistoryListItem = document.createElement('li');
+        newHistoryListItem.className = 'search__history--item js-history-item';
+        const newtextnode = [...this.searchHistoryStorage].pop();
+        const listItemContent = document.createTextNode(newtextnode);
+
+        newHistoryListItem.appendChild(listItemContent);
+
+        if (newtextnode !== undefined) {
+            if (this.searchHistoryList.lastChild.innerHTML !== newtextnode) {
+                this.searchHistoryList.appendChild(newHistoryListItem);
+            }
+        }
+        this.searchHistory.classList.add(state.active);
+
+        const searchHistoryItem = [...this.container.querySelectorAll('.js-history-item')];
+
+        for (let i = 0; i < searchHistoryItem.length; i += 1) {
+            searchHistoryItem[i].addEventListener('click', this.searchByHistoryItem);
+        }
+    }
+
+    hideQuerysHistory = () => {
+        this.searchHistory.classList.remove(state.active);
     }
 
     checkMoreItems = (respond) => {
@@ -116,6 +162,8 @@ export default class Search {
             this.messageError.classList.remove(state.active);
             this.searchInput.classList.remove(state.error);
         }
+
+        this.showQuerysHistory();
     }
 
     renderResults = (respond) => {
@@ -132,7 +180,7 @@ export default class Search {
         const insertModalTemplate = modalTemplate.render({ renderData }); // rendering nunjucks template
         this.modalContent.insertAdjacentHTML('beforeend', insertModalTemplate);
 
-        this.loaderDisable();
+        this.checkExistsImages(respond);
         this.loadMore.classList.add(state.active);
 
         if (respond.data.total_pages > 0 || respond.config.url.includes('random')) {
@@ -141,6 +189,7 @@ export default class Search {
             this.loadMore.classList.remove(state.active);
         }
         this.handleSelectImage();
+        this.loaderDisable();
     }
 
     handleSelectImage = () => {

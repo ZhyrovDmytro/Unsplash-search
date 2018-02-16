@@ -23,5 +23,6 @@ export const unsplashClient = {
 
 export const error = {
     searchQueryEmpty: "Search query can't be empty",
-    searchQueryShort: 'Query must have more then 2 letters'
+    searchQueryShort: 'Query must have more then 2 letters',
+    searchQueryError: 'We have no images for you =('
 };

@@ -7,6 +7,11 @@
             <button class="js-button-random btn btn-100">RANDOM</button>
         </div>
         <span class=" errorMessage js-error-message errorMessage__text"></span>
+        <div class="search__history js-history">
+            <ul class="search__history--list js-history-list">
+                <li class="search__history--item js-history-item d-none"></li>
+            </ul>
+        </div>
     </div>
     <div class="js-search-result search__result">
         {% include "../helpers/loader.nunj" %}

@@ -20,6 +20,7 @@
     }
 
     &__input {
+        position: relative;
         z-index: 10;
         width: 80%;
         padding: 5px;
@@ -87,13 +88,16 @@
         }
 
         &.disabled {
-            display: none;
+            opacity: 0;
+            visibility: hidden;
         }
 
         &.active {
-            display: block;
+            opacity: 1;
+            visibility: visible;
         }
     }
+
 
     &__load-more {
         display: none;
@@ -111,7 +115,20 @@
     }
 
     &__figure {
+        // animation: ease .8s appearImage;
         position: relative;
+    }
+
+    @keyframes appearImage {
+        0% {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        100% {
+            opacity: 1;
+            visibility: visible;
+        }
     }
 
     &__info {
@@ -170,6 +187,46 @@
             margin-left: 20px;
             font-weight: 600;
             color: #fff;
+        }
+    }
+
+    &__history {
+        position: absolute;
+        top: 100px;
+        z-index: 1000;
+        width: 100%;
+        background-color: #fff;
+        opacity: 0;
+        visibility: hidden;
+        box-shadow: 0 3px 10px 0 rgba(0, 0, 0, .3);
+        transition: all .6s ease;
+
+        @include media-breakpoint-up(lg) {
+            width: 500px;
+        }
+
+        &.active {
+            top: 60px;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        &--list {
+            padding-left: 0;
+            margin-bottom: 0;
+            list-style: none;
+        }
+
+        &--item {
+            padding: 5px 10px;
+            font-size: 1.2rem;
+
+            &:hover {
+                cursor: pointer;
+                background-color: rgb(245, 245, 245);
+                transform: scale(1.01);
+                box-shadow: 0 0 5px 0 rgba(0, 0, 0, .3);
+            }
         }
     }
 }
