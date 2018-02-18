@@ -11,11 +11,15 @@
             <ul class="search__history--list js-history-list">
                 <li class="search__history--item js-history-item d-none"></li>
             </ul>
+            <div class="search__buttons d-sm-none m-1">
+                <button class="js-button-search btn btn-100">FIND</button>
+                <button class="js-button-random btn btn-100">RANDOM</button>
+            </div>
         </div>
     </div>
     <div class="js-search-result search__result">
-        {% include "../helpers/loader.nunj" %}
     </div>
+        {% include "../helpers/loader.nunj" %}
     <div class="js-load-more search__load-more">
         <button class="js-button-more btn">LOAD MORE</button>
     </div>
