@@ -1,7 +1,7 @@
 .loader {
     @include size(50px);
-    position: absolute;
-    top: calc(50% - 25px);
+    position: relative;
+    margin-top: 20px;
     left: calc(50% - 25px);
     display: none;
     border: 3px inset  #eee;
@@ -10,6 +10,7 @@
     animation: rotate 1000ms infinite linear;
 
     &.active {
+        z-index: 1000;
         display: block;
     }
 }

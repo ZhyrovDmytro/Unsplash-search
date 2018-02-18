@@ -41,8 +41,8 @@ export default class Search {
         this.loaderActive();
 
         axios.get(searchPath)
-        .then(respond => {
-                console.log(respond);
+            .then(respond => {
+                // console.log(respond);
                 this.renderResults(respond);
             })
             .catch(error => {
@@ -109,7 +109,7 @@ export default class Search {
     }
 
     checkExistsImages = (respond) => {
-        if (respond.data.total === 0) {
+        if (respond.data.total < 1) {
             this.errorShow();
             this.messageError.innerHTML = error.searchQueryError;
         }
@@ -128,6 +128,9 @@ export default class Search {
                 this.searchHistoryList.appendChild(newHistoryListItem);
             }
         }
+
+        this.checkLastQuerys();
+
         this.searchHistory.classList.add(state.active);
 
         const searchHistoryItem = [...this.container.querySelectorAll('.js-history-item')];
@@ -135,6 +138,10 @@ export default class Search {
         for (let i = 0; i < searchHistoryItem.length; i += 1) {
             searchHistoryItem[i].addEventListener('click', this.searchByHistoryItem);
         }
+    }
+
+    checkLastQuerys = () => {
+        if (this.searchHistoryList.children.length > 3) this.searchHistoryList.firstChild.remove();
     }
 
     hideQuerysHistory = () => {

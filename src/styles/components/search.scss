@@ -98,7 +98,6 @@
         }
     }
 
-
     &__load-more {
         display: none;
         margin-bottom: 20px;
@@ -115,7 +114,7 @@
     }
 
     &__figure {
-        // animation: ease .8s appearImage;
+        animation: ease .8s appearImage;
         position: relative;
     }
 
