@@ -12,9 +12,6 @@ import Search from './components/search';
 
 const app = (config) => {
     init(Search, document.querySelector('.js-search'));
-    // init(Masonry, document.querySelector('.js-search-result'), {
-    //     itemSelector: '.search__figure'
-    // });
 };
 
 app(window.config);
