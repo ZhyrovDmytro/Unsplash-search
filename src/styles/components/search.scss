@@ -11,8 +11,8 @@
     &__form {
         position: relative;
         display: flex;
-        background-color: #fff;
         flex-wrap: wrap;
+        background-color: #fff;
 
         @include media-breakpoint-up(lg) {
             justify-content: space-between;
@@ -64,8 +64,8 @@
         width: 100%;
 
         @include media-breakpoint-up(lg) {
-            justify-self: end;
             width: max-content;
+            justify-self: end;
         }
     }
 

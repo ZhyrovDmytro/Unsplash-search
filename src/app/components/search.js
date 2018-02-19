@@ -19,8 +19,7 @@ export default class Search {
         this.modalContent = document.querySelector('.js-modal-content');
         this.closeModalButton = document.querySelector('.js-modal-close');
 
-        this.searchHistoryStorage = [];
-        this.saveList = [];
+        this.saveList = JSON.parse(localStorage.getItem(('list')));
 
         this.pageNumber = 1;
 
@@ -28,7 +27,7 @@ export default class Search {
 
         this.searchButton.addEventListener('click', this.searchItems);
         this.searchInput.addEventListener('focus', this.errorRemove);
-        this.searchInput.addEventListener('focusIn', this.showQuerysHistory);
+        this.searchInput.addEventListener('focus', this.showHistoryList);
         this.searchInput.addEventListener('blur', this.hideQuerysHistory);
         this.searchInput.addEventListener('keyup', this.searchItemsByEnterKey);
         this.searchInput.addEventListener('input', this.resetSearchResults);
@@ -36,6 +35,7 @@ export default class Search {
         this.loadMoreButton.addEventListener('click', this.loadMoreItems);
         this.modal.addEventListener('click', this.handleClickModal);
         this.closeModalButton.addEventListener('click', this.closeModalWindow);
+        this.makeHistoryList();
     }
 
     requestService = (searchPath) => {
@@ -78,7 +78,6 @@ export default class Search {
 
     searchItems = () => {
         const inputValue = this.searchInput.value;
-        this.searchHistoryStorage.push(inputValue);
 
         if (inputValue.trim() === '') {
             this.errorShow();
@@ -88,12 +87,11 @@ export default class Search {
             this.messageError.innerHTML = errors.SEARCH_QUERY_SHORT;
         } else {
             this.getSearchingPath(inputValue);
+            this.saveList.push(inputValue);
+            localStorage.setItem('list', JSON.stringify(this.saveList));
+            this.makeHistoryList();
             this.resetSearchResults();
         }
-        // this.saveList.push(inputValue);
-        // localStorage.setItem('list', JSON.stringify(this.saveList));
-
-        // console.log(JSON.parse(localStorage.getItem(('list'))));
     }
 
     searchItemsByEnterKey = (event) => {
@@ -120,39 +118,59 @@ export default class Search {
         }
     }
 
-    showQuerysHistory = () => {
-        const newHistoryListItem = document.createElement('li');
-        newHistoryListItem.className = classes.HISTORY_ITEM;
+    makeHistoryList = () => {
+        // create new item
+        for (let i = 0; i < this.saveList.length; i += 1) {
+            const newHistoryListItem = document.createElement('li');
+            newHistoryListItem.className = classes.HISTORY_ITEM;
 
-        const newtextnode = [...this.searchHistoryStorage].pop();
-        const listItemContent = document.createTextNode(newtextnode);
+            newHistoryListItem.appendChild(document.createTextNode(this.saveList[i]));
 
-        newHistoryListItem.appendChild(listItemContent);
-
-        if (newtextnode !== undefined) {
-            if (this.searchHistoryList.lastChild.innerHTML !== newtextnode) {
+            // add new item to history item list
+            if (this.saveList[i] !== '' && this.saveList[i] !== this.searchHistoryList.lastChild.innerHTML) {
                 this.searchHistoryList.appendChild(newHistoryListItem);
             }
+            // show search history list
         }
 
-        this.checkLastQuerys();
-
-        this.searchHistory.classList.add(state.ACTIVE);
-        const searchHistoryItem = [...this.container.querySelectorAll('.js-history-item')];
-
+        // find results from history query list by click
+        const searchHistoryItem = this.container.querySelectorAll('.js-history-item');
+        // console.log(searchHistoryItem);
+        if (searchHistoryItem > 6) searchHistoryItem.splice(6, 5);
         for (let i = 0; i < searchHistoryItem.length; i += 1) {
             searchHistoryItem[i].addEventListener('click', this.searchByHistoryItem);
         }
     }
 
-    checkLastQuerys = () => {
-        if (this.searchHistoryList.children.length > 4) this.searchHistoryList.firstChild.remove();
+    showHistoryList = () => {
+        // console.log(this.saveList);
+        this.checkLastQuerys();
+        this.searchHistory.classList.add(state.ACTIVE);
     }
 
+    /**
+     *  remove old history item if more then 5
+     */
+    checkLastQuerys = () => {
+        if (this.saveList.length > 5) {
+            this.saveList.splice(0, 1);
+        }
+    }
+
+    /**
+     *  hide search history
+     */
     hideQuerysHistory = () => {
         this.searchHistory.classList.remove(state.ACTIVE);
     }
 
+    /**
+     * Check total items list.
+     * Add a button if there are more items than shown.
+     *
+     * @param respond {object} - API data
+     *
+     */
     checkMoreItems = (respond) => {
         const items = [...this.container.querySelectorAll('.js-figure')];
 
@@ -160,6 +178,7 @@ export default class Search {
         if (items.length === respond.data.total) this.loadMore.classList.remove(state.ACTIVE);
     }
 
+    // Show more items on click
     loadMoreItems = () => {
         this.getSearchingPath();
     }
@@ -174,8 +193,6 @@ export default class Search {
             this.messageError.classList.remove(state.ACTIVE);
             this.searchInput.classList.remove(state.ERROR);
         }
-
-        this.showQuerysHistory();
     }
 
     renderResults = (respond) => {
