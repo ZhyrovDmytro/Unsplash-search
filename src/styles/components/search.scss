@@ -10,12 +10,12 @@
 
     &__form {
         position: relative;
-        display: grid;
-        grid-template-columns: auto;
-        grid-template-rows: auto;
+        display: flex;
+        flex-wrap: wrap;
+        background-color: #fff;
 
         @include media-breakpoint-up(lg) {
-            grid-template-columns: 50% auto;
+            justify-content: space-between;
         }
     }
 
@@ -58,12 +58,13 @@
             }
         }
     }
-
     &__buttons {
         display: flex;
         align-self: center;
+        width: 100%;
 
         @include media-breakpoint-up(lg) {
+            width: max-content;
             justify-self: end;
         }
     }
@@ -114,8 +115,8 @@
     }
 
     &__figure {
-        animation: ease .8s appearImage;
         position: relative;
+        animation: ease .8s appearImage;
     }
 
     @keyframes appearImage {

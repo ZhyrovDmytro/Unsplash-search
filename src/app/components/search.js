@@ -1,6 +1,6 @@
 import nunjucks from 'nunjucks';
 import axios from 'axios';
-import { API, template, state, nunjucksOption, unsplashClient, error } from './../constants';
+import { API, template, state, nunjucksOption, unsplashClient, errors, classes } from './../constants';
 
 export default class Search {
     constructor(container) {
@@ -19,14 +19,15 @@ export default class Search {
         this.modalContent = document.querySelector('.js-modal-content');
         this.closeModalButton = document.querySelector('.js-modal-close');
 
-        this.searchHistoryStorage = [];
+        this.saveList = JSON.parse(localStorage.getItem(('list')));
+
         this.pageNumber = 1;
 
-        this.nunjEnv = nunjucks.configure(template.templatePath, nunjucksOption.web);
+        this.nunjEnv = nunjucks.configure(template.TEMPLATE_PATH, nunjucksOption.web);
 
         this.searchButton.addEventListener('click', this.searchItems);
         this.searchInput.addEventListener('focus', this.errorRemove);
-        this.searchInput.addEventListener('focusIn', this.showQuerysHistory);
+        this.searchInput.addEventListener('focus', this.showHistoryList);
         this.searchInput.addEventListener('blur', this.hideQuerysHistory);
         this.searchInput.addEventListener('keyup', this.searchItemsByEnterKey);
         this.searchInput.addEventListener('input', this.resetSearchResults);
@@ -34,6 +35,7 @@ export default class Search {
         this.loadMoreButton.addEventListener('click', this.loadMoreItems);
         this.modal.addEventListener('click', this.handleClickModal);
         this.closeModalButton.addEventListener('click', this.closeModalWindow);
+        this.makeHistoryList();
     }
 
     requestService = (searchPath) => {
@@ -65,10 +67,10 @@ export default class Search {
 
         if (event.target === this.searchRandom || this.searchInput.value === '') {
             this.searchInput.value = '';
-            searchPath = `${API.searchItemsRandom}?count=12&client_id=${unsplashClient.id}`;
+            searchPath = `${API.SEARCH_ITEMS_RANDOM}?count=12&client_id=${unsplashClient.ID}`;
             if (event.target !== this.loadMoreButton) this.resetSearchResults();
         } else {
-            searchPath = `${API.searchItems}?page=${nextPage}&per_page=10&query=${inputValue}&client_id=${unsplashClient.id}`;
+            searchPath = `${API.SEARCH_ITEMS}?page=${nextPage}&per_page=10&query=${inputValue}&client_id=${unsplashClient.ID}`;
         }
 
         this.requestService(searchPath);
@@ -77,16 +79,17 @@ export default class Search {
     searchItems = () => {
         const inputValue = this.searchInput.value;
 
-        this.searchHistoryStorage.push(inputValue);
-
         if (inputValue.trim() === '') {
             this.errorShow();
-            this.messageError.innerHTML = error.searchQueryEmpty;
+            this.messageError.innerHTML = errors.SEARCH_QUERY_EMPTY;
         } else if (inputValue.length < 3) {
             this.errorShow();
-            this.messageError.innerHTML = error.searchQueryShort;
+            this.messageError.innerHTML = errors.SEARCH_QUERY_SHORT;
         } else {
             this.getSearchingPath(inputValue);
+            this.saveList.push(inputValue);
+            localStorage.setItem('list', JSON.stringify(this.saveList));
+            this.makeHistoryList();
             this.resetSearchResults();
         }
     }
@@ -111,66 +114,85 @@ export default class Search {
     checkExistsImages = (respond) => {
         if (respond.data.total < 1) {
             this.errorShow();
-            this.messageError.innerHTML = error.searchQueryError;
+            this.messageError.innerHTML = errors.SEARCH_QUERY_ERROR;
         }
     }
 
-    showQuerysHistory = () => {
-        const newHistoryListItem = document.createElement('li');
-        newHistoryListItem.className = 'search__history--item js-history-item';
-        const newtextnode = [...this.searchHistoryStorage].pop();
-        const listItemContent = document.createTextNode(newtextnode);
+    makeHistoryList = () => {
+        // create new item
+        for (let i = 0; i < this.saveList.length; i += 1) {
+            const newHistoryListItem = document.createElement('li');
+            newHistoryListItem.className = classes.HISTORY_ITEM;
 
-        newHistoryListItem.appendChild(listItemContent);
+            newHistoryListItem.appendChild(document.createTextNode(this.saveList[i]));
 
-        if (newtextnode !== undefined) {
-            if (this.searchHistoryList.lastChild.innerHTML !== newtextnode) {
+            // add new item to history item list
+            if (this.saveList[i] !== '' && this.saveList[i] !== this.searchHistoryList.lastChild.innerHTML) {
                 this.searchHistoryList.appendChild(newHistoryListItem);
             }
+            // show search history list
         }
 
-        this.checkLastQuerys();
-
-        this.searchHistory.classList.add(state.active);
-
-        const searchHistoryItem = [...this.container.querySelectorAll('.js-history-item')];
-
+        // find results from history query list by click
+        const searchHistoryItem = this.container.querySelectorAll('.js-history-item');
+        // console.log(searchHistoryItem);
+        if (searchHistoryItem > 6) searchHistoryItem.splice(6, 5);
         for (let i = 0; i < searchHistoryItem.length; i += 1) {
             searchHistoryItem[i].addEventListener('click', this.searchByHistoryItem);
         }
     }
 
+    showHistoryList = () => {
+        // console.log(this.saveList);
+        this.checkLastQuerys();
+        this.searchHistory.classList.add(state.ACTIVE);
+    }
+
+    /**
+     *  remove old history item if more then 5
+     */
     checkLastQuerys = () => {
-        if (this.searchHistoryList.children.length > 3) this.searchHistoryList.firstChild.remove();
+        if (this.saveList.length > 5) {
+            this.saveList.splice(0, 1);
+        }
     }
 
+    /**
+     *  hide search history
+     */
     hideQuerysHistory = () => {
-        this.searchHistory.classList.remove(state.active);
+        this.searchHistory.classList.remove(state.ACTIVE);
     }
 
+    /**
+     * Check total items list.
+     * Add a button if there are more items than shown.
+     *
+     * @param respond {object} - API data
+     *
+     */
     checkMoreItems = (respond) => {
         const items = [...this.container.querySelectorAll('.js-figure')];
 
-        this.loadMore.classList.add(state.active);
-        if (items.length === respond.data.total) this.loadMore.classList.remove(state.active);
+        this.loadMore.classList.add(state.ACTIVE);
+        if (items.length === respond.data.total) this.loadMore.classList.remove(state.ACTIVE);
     }
 
+    // Show more items on click
     loadMoreItems = () => {
         this.getSearchingPath();
     }
 
     errorShow = () => {
-        this.messageError.classList.add(state.active);
-        this.searchInput.classList.add(state.error);
+        this.messageError.classList.add(state.ACTIVE);
+        this.searchInput.classList.add(state.ERROR);
     }
 
     errorRemove = () => {
-        if (this.searchInput.classList.contains(state.error)) {
-            this.messageError.classList.remove(state.active);
-            this.searchInput.classList.remove(state.error);
+        if (this.searchInput.classList.contains(state.ERROR)) {
+            this.messageError.classList.remove(state.ACTIVE);
+            this.searchInput.classList.remove(state.ERROR);
         }
-
-        this.showQuerysHistory();
     }
 
     renderResults = (respond) => {
@@ -188,12 +210,12 @@ export default class Search {
         this.modalContent.insertAdjacentHTML('beforeend', insertModalTemplate);
 
         this.checkExistsImages(respond);
-        this.loadMore.classList.add(state.active);
+        this.loadMore.classList.add(state.ACTIVE);
 
         if (respond.data.total_pages > 0 || respond.config.url.includes('random')) {
             this.checkMoreItems(respond);
         } else {
-            this.loadMore.classList.remove(state.active);
+            this.loadMore.classList.remove(state.ACTIVE);
         }
         this.handleSelectImage();
         this.loaderDisable();
@@ -208,7 +230,7 @@ export default class Search {
     }
 
     renderModal = (respond) => {
-        this.modal.classList.add(state.active);
+        this.modal.classList.add(state.ACTIVE);
         this.openSelectedImage();
     }
 
@@ -217,9 +239,9 @@ export default class Search {
         const itemId = event.currentTarget.dataset.id;
 
         for (let i = 0; i < clickedImages.length; i += 1) {
-            if (clickedImages[i].classList.contains(state.active)) clickedImages[i].classList.remove(state.active);
+            if (clickedImages[i].classList.contains(state.ACTIVE)) clickedImages[i].classList.remove(state.ACTIVE);
         }
-        this.modalContent.querySelector(`#_${itemId}`).classList.add(state.active);
+        this.modalContent.querySelector(`#_${itemId}`).classList.add(state.ACTIVE);
     }
 
     // handle outside click
@@ -229,21 +251,21 @@ export default class Search {
 
     // close modal window
     closeModalWindow = () => {
-        this.modal.classList.remove(state.active);
+        this.modal.classList.remove(state.ACTIVE);
     }
 
     resetSearchResults = () => {
         this.results.innerHTML = '';
-        this.loadMore.classList.remove(state.active);
+        this.loadMore.classList.remove(state.ACTIVE);
     }
 
     // add loader
     loaderActive = () => {
-        this.loader.classList.add(state.active);
+        this.loader.classList.add(state.ACTIVE);
     }
 
     // delete loader
     loaderDisable = () => {
-        this.loader.classList.remove(state.active);
+        this.loader.classList.remove(state.ACTIVE);
     }
 }
