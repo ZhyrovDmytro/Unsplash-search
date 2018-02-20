@@ -52,7 +52,11 @@
     &__profile {
         display: flex;
         justify-content: space-between;
-        margin: 0 30px;
+        margin: 0;
+
+        @include media-breakpoint-up(md) {
+            margin: 0 30px;
+        }
     }
 
     &__wrapper {
@@ -115,7 +119,7 @@
 
         &--photo {
             @include size(50px);
-            margin: 0 10px;
+            margin: 10px 5px;;
             border-radius: 50%;
         }
     }
@@ -137,9 +141,9 @@
     }
 
     &__download {
-        border: 1px solid #eee;
         padding: 0 10px;
         margin-left: 5px;
+        border: 1px solid #eee;
         transition: all .3s ease;
 
         &:hover {
@@ -169,6 +173,7 @@
     }
 
     &__location {
+        padding-bottom: 10px;
         padding-left: 30px;
         text-align: left;
 
