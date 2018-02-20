@@ -1,6 +1,15 @@
 import nunjucks from 'nunjucks';
 import axios from 'axios';
-import { API, template, state, nunjucksOption, unsplashClient, errors, classes } from './../constants';
+
+import {
+    API,
+    template,
+    state,
+    nunjucksOption,
+    unsplashClient,
+    errors,
+    classes
+} from './../constants';
 
 export default class Search {
     constructor(container) {
@@ -44,7 +53,6 @@ export default class Search {
 
         axios.get(searchPath)
             .then(respond => {
-                // console.log(respond);
                 this.renderResults(respond);
             })
             .catch(error => {
@@ -89,7 +97,8 @@ export default class Search {
             this.getSearchingPath(inputValue);
             this.saveList.push(inputValue);
             localStorage.setItem('list', JSON.stringify(this.saveList));
-            this.makeHistoryList();
+
+            this.addHistoryItem(inputValue);
             this.resetSearchResults();
         }
     }
@@ -118,6 +127,13 @@ export default class Search {
         }
     }
 
+    addHistoryItem = (inputValue) => {
+        const newHistoryListItem = document.createElement('li');
+        newHistoryListItem.className = classes.HISTORY_ITEM;
+        newHistoryListItem.appendChild(document.createTextNode(inputValue));
+        this.searchHistoryList.appendChild(newHistoryListItem);
+    }
+
     makeHistoryList = () => {
         // create new item
         for (let i = 0; i < this.saveList.length; i += 1) {
@@ -130,31 +146,32 @@ export default class Search {
             if (this.saveList[i] !== '' && this.saveList[i] !== this.searchHistoryList.lastChild.innerHTML) {
                 this.searchHistoryList.appendChild(newHistoryListItem);
             }
-            // show search history list
         }
+    }
+
+    showHistoryList = () => {
+        this.checkLastQuerys();
+        this.searchHistory.classList.add(state.ACTIVE);
 
         // find results from history query list by click
         const searchHistoryItem = this.container.querySelectorAll('.js-history-item');
-        // console.log(searchHistoryItem);
         if (searchHistoryItem > 6) searchHistoryItem.splice(6, 5);
         for (let i = 0; i < searchHistoryItem.length; i += 1) {
             searchHistoryItem[i].addEventListener('click', this.searchByHistoryItem);
         }
     }
 
-    showHistoryList = () => {
-        // console.log(this.saveList);
-        this.checkLastQuerys();
-        this.searchHistory.classList.add(state.ACTIVE);
-    }
-
     /**
-     *  remove old history item if more then 5
+     *  remove old history item
      */
     checkLastQuerys = () => {
+        // remove from localstorage
         if (this.saveList.length > 5) {
             this.saveList.splice(0, 1);
         }
+
+        // remove from historyList
+        if (this.searchHistoryList.childNodes.length > 6) this.searchHistoryList.firstChild.remove();
     }
 
     /**
