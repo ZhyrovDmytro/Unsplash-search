@@ -87,7 +87,6 @@ export default class Search {
 
     /**
      * Search items if input query has more 3 letters and if it's now empty
-     *
      */
     searchItems = () => {
         const inputValue = this.searchInput.value;
@@ -103,7 +102,7 @@ export default class Search {
 
             // Check new query if we have same query in history list
             if (this.saveList.some(key => key === inputValue)) {
-                this.checkLastQuerys();
+                this.addHistoryItem(inputValue);
             } else {
                 this.saveList.push(inputValue); // if new query is unique add to history list
                 this.addHistoryItem(inputValue);
@@ -132,7 +131,6 @@ export default class Search {
 
     /**
      * Search by history items on click
-     *
      */
     searchByHistoryItem = () => {
         const searchHistoryItems = [...this.searchHistoryList.querySelectorAll('.js-history-item')];
@@ -187,9 +185,9 @@ export default class Search {
             }
         }
     }
+
     /**
      * Show history list with last 5 search queries
-     *
      */
     showHistoryList = () => {
         this.searchHistory.classList.add(state.ACTIVE);
@@ -210,7 +208,6 @@ export default class Search {
 
     /**
      * Show auto suggest queries while typing more than 3 letters
-     *
      */
     suggestSearchQuery = () => {
         const searchHistoryItems = [...this.container.querySelectorAll('.js-history-item')];
@@ -257,7 +254,6 @@ export default class Search {
      * Add a button if there are more items than shown.
      *
      * @param respond {object} - receivved data from server
-     *
      */
     checkMoreItems = (respond) => {
         const items = [...this.container.querySelectorAll('.js-figure')];
