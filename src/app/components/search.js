@@ -100,13 +100,8 @@ export default class Search {
         } else {
             this.getSearchingPath(inputValue);
 
-            // Check new query if we have same query in history list
-            if (this.saveList.some(key => key === inputValue)) {
-                this.addHistoryItem(inputValue);
-            } else {
-                this.saveList.push(inputValue); // if new query is unique add to history list
-                this.addHistoryItem(inputValue);
-            }
+            this.saveList.push(inputValue); // add new query to history list
+            this.addHistoryItem(inputValue);
 
             localStorage.setItem('list', JSON.stringify(this.saveList));
             this.resetSearchResults();
