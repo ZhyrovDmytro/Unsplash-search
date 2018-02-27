@@ -28,13 +28,18 @@ export default class Search {
         this.modalContent = document.querySelector('.js-modal-content');
         this.closeModalButton = document.querySelector('.js-modal-close');
 
+        // save search querys to local storage
         this.saveList = JSON.parse(localStorage.getItem(('list')));
 
         this.pageNumber = 1;
 
+        // Get name of template to render
         this.nunjEnv = nunjucks.configure(template.TEMPLATE_PATH, nunjucksOption.web);
 
+        // search button event
         this.searchButton.addEventListener('click', this.searchItems);
+
+        // searchinput events
         this.searchInput.addEventListener('focus', this.errorRemove);
         this.searchInput.addEventListener('focus', this.showHistoryList);
         this.searchInput.addEventListener('blur', this.hideQuerysHistory);
@@ -42,12 +47,22 @@ export default class Search {
         this.searchInput.addEventListener('keyup', this.suggestSearchQuery);
         this.searchInput.addEventListener('input', this.resetSearchResults);
         this.searchRandom.addEventListener('click', this.getSearchingPath);
+
+        // load more items by click
         this.loadMoreButton.addEventListener('click', this.loadMoreItems);
+
+        // modal window events
         this.modal.addEventListener('click', this.handleClickModal);
         this.closeModalButton.addEventListener('click', this.closeModalWindow);
+
+        // create history list
         this.makeHistoryList();
     }
 
+    /**
+     *Perform AJAX call to the web-service
+     *@param {string}  searchPath- path to expected API
+     */
     requestService = (searchPath) => {
 
         this.loaderActive();
@@ -61,6 +76,10 @@ export default class Search {
             });
     }
 
+    /**
+     * Get searching path depends from search by query or random
+     * @param {string} inputValue - search query from input
+     */
     getSearchingPath = (inputValue) => {
         let searchPath;
         let nextPage;
@@ -112,7 +131,7 @@ export default class Search {
     /**
      * Search image by push Enter key on keyboard
      *
-     * @param event {object} - events
+     * @param  {object} event - events
      */
     searchItemsByEnterKey = (event) => {
         const inputValue = this.searchInput.value;
@@ -135,8 +154,10 @@ export default class Search {
         }
     }
 
+    /**
+     *
+     */
     handleHistoryItemForSearch = (event) => {
-
         this.searchInput.value = '';
         this.searchInput.value = event.target.innerHTML;
         this.searchItems();
@@ -145,7 +166,7 @@ export default class Search {
     /**
      * Show error if no items to show
      *
-     * @param respond {object} - received data from server
+     * @param  {object} respond- received data from server
      */
     checkExistsImages = (respond) => {
         if (respond.data.total < 1) { // check the number of available images
@@ -157,7 +178,7 @@ export default class Search {
     /**
      * Add new query to history list after search
      *
-     * @param inputValue {string} - input query
+     * @param  {string} inputValue- input query
      */
     addHistoryItem = (inputValue) => {
         const newHistoryListItem = document.createElement('li');
@@ -273,7 +294,6 @@ export default class Search {
             this.searchInput.classList.remove(state.ERROR);
         }
     }
-
 
     /**
      * render result list with received datat
