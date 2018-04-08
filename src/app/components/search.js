@@ -29,7 +29,7 @@ export default class Search {
         this.closeModalButton = document.querySelector('.js-modal-close');
 
         // save search querys to local storage
-        this.saveList = JSON.parse(localStorage.getItem(('list')));
+        this.saveList = JSON.parse(localStorage.getItem(('list'))) || [];
 
         this.pageNumber = 1;
 
@@ -189,15 +189,17 @@ export default class Search {
 
     makeHistoryList = () => {
         // create new item
-        for (let i = 0; i < this.saveList.length; i += 1) {
-            const newHistoryListItem = document.createElement('li');
-            newHistoryListItem.className = classes.HISTORY_ITEM;
+        if (this.saveList) {
+            for (let i = 0; i < this.saveList.length; i += 1) {
+                const newHistoryListItem = document.createElement('li');
+                newHistoryListItem.className = classes.HISTORY_ITEM;
 
-            newHistoryListItem.appendChild(document.createTextNode(this.saveList[i]));
+                newHistoryListItem.appendChild(document.createTextNode(this.saveList[i]));
 
-            // add new item to history item list
-            if (this.saveList[i] !== '' && this.saveList[i] !== this.searchHistoryList.lastChild.innerHTML) {
-                this.searchHistoryList.appendChild(newHistoryListItem);
+                // add new item to history item list
+                if (this.saveList[i] !== '' && this.saveList[i] !== this.searchHistoryList.lastChild.innerHTML) {
+                    this.searchHistoryList.appendChild(newHistoryListItem);
+                }
             }
         }
     }
@@ -245,6 +247,13 @@ export default class Search {
 
             // Show last search queries while typing less than 3 letters
             if (searchInputValue.length < 3) this.showHistoryList();
+        }
+    }
+
+    discardSameItems = (findNameValue) => {
+        // console.log(findNameValue);
+        if (findNameValue.length > 1) {
+            console.log(findNameValue[0]);
         }
     }
 
