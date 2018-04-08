@@ -119,13 +119,19 @@ export default class Search {
         } else {
             this.getSearchingPath(inputValue);
 
-            this.saveList.push(inputValue); // add new query to history list
+            this.addNewQueryToHistoryList(inputValue);
             this.addHistoryItem(inputValue);
 
             localStorage.setItem('list', JSON.stringify(this.saveList));
             this.resetSearchResults();
         }
         this.checkLastQuerys();
+    }
+
+    // add new query to history list
+    addNewQueryToHistoryList = (inputValue) => {
+        this.saveList.unshift(inputValue);
+
     }
 
     /**
@@ -154,9 +160,6 @@ export default class Search {
         }
     }
 
-    /**
-     *
-     */
     handleHistoryItemForSearch = (event) => {
         this.searchInput.value = '';
         this.searchInput.value = event.target.innerHTML;
@@ -184,7 +187,7 @@ export default class Search {
         const newHistoryListItem = document.createElement('li');
         newHistoryListItem.className = classes.HISTORY_ITEM;
         newHistoryListItem.appendChild(document.createTextNode(inputValue));
-        this.searchHistoryList.appendChild(newHistoryListItem);
+        this.searchHistoryList.insertBefore(newHistoryListItem, this.searchHistoryList.firstChild);
     }
 
     makeHistoryList = () => {
@@ -211,7 +214,7 @@ export default class Search {
         this.searchHistory.classList.add(state.ACTIVE);
 
         const searchHistoryItems = [...this.container.querySelectorAll('.js-history-item')];
-        const searchByHistoryItemsToShow = [...searchHistoryItems.slice(1).slice(-5)];
+        const searchByHistoryItemsToShow = [...searchHistoryItems.slice(0).slice(-5)];
         const searchByHistoryItemsToHide = searchHistoryItems.slice(0, searchHistoryItems.length - 5);
         // hide all queries except last 5
         for (let i = 0; i < searchByHistoryItemsToHide.length; i += 1) {
