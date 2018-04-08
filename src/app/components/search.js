@@ -131,7 +131,7 @@ export default class Search {
     // add new query to history list
     addNewQueryToHistoryList = (inputValue) => {
         this.saveList.unshift(inputValue);
-
+        this.saveList = [...new Set(this.saveList)];
     }
 
     /**
@@ -214,8 +214,8 @@ export default class Search {
         this.searchHistory.classList.add(state.ACTIVE);
 
         const searchHistoryItems = [...this.container.querySelectorAll('.js-history-item')];
-        const searchByHistoryItemsToShow = [...searchHistoryItems.slice(0).slice(-5)];
-        const searchByHistoryItemsToHide = searchHistoryItems.slice(0, searchHistoryItems.length - 5);
+        const searchByHistoryItemsToShow = [...searchHistoryItems.slice(0, 5)];
+        const searchByHistoryItemsToHide = searchHistoryItems.slice(5, searchHistoryItems.length);
         // hide all queries except last 5
         for (let i = 0; i < searchByHistoryItemsToHide.length; i += 1) {
             if (searchByHistoryItemsToHide[i].classList.contains(state.ACTIVE)) searchByHistoryItemsToHide[i].classList.remove(state.ACTIVE);
