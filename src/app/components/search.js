@@ -29,7 +29,7 @@ export default class Search {
         this.closeModalButton = document.querySelector('.js-modal-close');
 
         // save search querys to local storage
-        this.saveList = JSON.parse(localStorage.getItem(('list')));
+        this.saveList = JSON.parse(localStorage.getItem(('list'))) || [];
 
         this.pageNumber = 1;
 
@@ -119,13 +119,19 @@ export default class Search {
         } else {
             this.getSearchingPath(inputValue);
 
-            this.saveList.push(inputValue); // add new query to history list
+            this.addNewQueryToHistoryList(inputValue);
             this.addHistoryItem(inputValue);
 
             localStorage.setItem('list', JSON.stringify(this.saveList));
             this.resetSearchResults();
         }
         this.checkLastQuerys();
+    }
+
+    // add new query to history list
+    addNewQueryToHistoryList = (inputValue) => {
+        this.saveList.unshift(inputValue);
+        this.saveList = [...new Set(this.saveList)];
     }
 
     /**
@@ -154,9 +160,6 @@ export default class Search {
         }
     }
 
-    /**
-     *
-     */
     handleHistoryItemForSearch = (event) => {
         this.searchInput.value = '';
         this.searchInput.value = event.target.innerHTML;
@@ -184,20 +187,22 @@ export default class Search {
         const newHistoryListItem = document.createElement('li');
         newHistoryListItem.className = classes.HISTORY_ITEM;
         newHistoryListItem.appendChild(document.createTextNode(inputValue));
-        this.searchHistoryList.appendChild(newHistoryListItem);
+        this.searchHistoryList.insertBefore(newHistoryListItem, this.searchHistoryList.firstChild);
     }
 
     makeHistoryList = () => {
         // create new item
-        for (let i = 0; i < this.saveList.length; i += 1) {
-            const newHistoryListItem = document.createElement('li');
-            newHistoryListItem.className = classes.HISTORY_ITEM;
+        if (this.saveList) {
+            for (let i = 0; i < this.saveList.length; i += 1) {
+                const newHistoryListItem = document.createElement('li');
+                newHistoryListItem.className = classes.HISTORY_ITEM;
 
-            newHistoryListItem.appendChild(document.createTextNode(this.saveList[i]));
+                newHistoryListItem.appendChild(document.createTextNode(this.saveList[i]));
 
-            // add new item to history item list
-            if (this.saveList[i] !== '' && this.saveList[i] !== this.searchHistoryList.lastChild.innerHTML) {
-                this.searchHistoryList.appendChild(newHistoryListItem);
+                // add new item to history item list
+                if (this.saveList[i] !== '' && this.saveList[i] !== this.searchHistoryList.lastChild.innerHTML) {
+                    this.searchHistoryList.appendChild(newHistoryListItem);
+                }
             }
         }
     }
@@ -209,8 +214,8 @@ export default class Search {
         this.searchHistory.classList.add(state.ACTIVE);
 
         const searchHistoryItems = [...this.container.querySelectorAll('.js-history-item')];
-        const searchByHistoryItemsToShow = [...searchHistoryItems.slice(1).slice(-5)];
-        const searchByHistoryItemsToHide = searchHistoryItems.slice(0, searchHistoryItems.length - 5);
+        const searchByHistoryItemsToShow = [...searchHistoryItems.slice(0, 5)];
+        const searchByHistoryItemsToHide = searchHistoryItems.slice(5, searchHistoryItems.length);
         // hide all queries except last 5
         for (let i = 0; i < searchByHistoryItemsToHide.length; i += 1) {
             if (searchByHistoryItemsToHide[i].classList.contains(state.ACTIVE)) searchByHistoryItemsToHide[i].classList.remove(state.ACTIVE);
@@ -245,6 +250,13 @@ export default class Search {
 
             // Show last search queries while typing less than 3 letters
             if (searchInputValue.length < 3) this.showHistoryList();
+        }
+    }
+
+    discardSameItems = (findNameValue) => {
+        // console.log(findNameValue);
+        if (findNameValue.length > 1) {
+            console.log(findNameValue[0]);
         }
     }
 
